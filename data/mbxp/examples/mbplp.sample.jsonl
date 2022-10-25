@@ -1,1 +1,0 @@
-{"task_id": "MBPLP/1", "language": "perl", "completion": "    return $m >= $n ? $cost[$m][$n] : $cost[$m][$n] + min_cost($cost, $m - 1, $n - 1);\n}"}

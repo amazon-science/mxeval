@@ -1,1 +1,0 @@
-{"task_id": "MBPHP/1", "language": "php", "completion": "    return $cost[$m][$n];\n}"}
