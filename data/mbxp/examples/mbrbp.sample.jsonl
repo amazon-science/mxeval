@@ -1,0 +1,1 @@
+{"task_id": "MBRBP/1", "language": "ruby", "completion": "  return cost[m][n]\n\nend\n"}
