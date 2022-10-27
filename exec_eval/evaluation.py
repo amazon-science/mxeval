@@ -94,7 +94,6 @@ def evaluate_functional_correctness(
 
     seed = int(time.time() * 1000000) % 1000000
     np.random.seed(seed=seed)  # microsecond
-    print("Setting seed as", seed)
 
     with ThreadPoolExecutor(max_workers=n_workers) as executor:
         futures = []

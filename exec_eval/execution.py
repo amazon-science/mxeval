@@ -17,6 +17,9 @@ import tempfile
 import time
 import errno
 from typing import Dict, Optional
+import threading
+lock = threading.Lock()
+
 
 def check_correctness_java(
     problem: Dict,
@@ -48,17 +51,18 @@ def check_correctness_java(
 
     try:
         exec_result_compile = subprocess.run(
-            [f"{language}c", path],
+            [f"javac", path],
             timeout=int(compile_timeout),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
         )
+        compiled = exec_result_compile.returncode == 0
         if verbose:
             print("exec_result_compile", exec_result_compile)
         start = time.time()
         exec_result_run = subprocess.run(
-            [f"{language}", "-cp", base_path, "Main"],
+            [f"java", "-cp", base_path, "Main"],
             timeout=int(timeout),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -77,6 +81,7 @@ def check_correctness_java(
         passed = False
         message = str(e)
         elapsed = None
+        compiled = False
 
     try:
         shutil.rmtree(base_path)
@@ -90,6 +95,7 @@ def check_correctness_java(
         result=message,
         completion_id=completion_id,
         time_elapsed=elapsed,
+        compiled=compiled,
     )
 
 
@@ -102,14 +108,67 @@ def check_correctness_scala(
     language="scala",
     compile_timeout: float = 100,
 ):
-    return check_correctness_java(
-        problem,
-        completion,
-        timeout,
-        completion_id,
-        verbose,
-        language,
-        compile_timeout
+
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    entire_string = problem["prompt"] + completion + problem["test"]
+    base_path = setup_base_path(current_dir, f"{language}_exec_eval", "")
+    try:
+        os.makedirs(base_path, exist_ok=False)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+    path = os.path.join(base_path, f"main.{language}")
+
+    with open(path, "w") as f:
+        f.write(entire_string)
+
+    try:
+        exec_result_compile = subprocess.run(
+            [f"scalac", path, "-d", base_path],
+            timeout=int(compile_timeout),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        compiled = exec_result_compile.returncode == 0
+        if verbose:
+            print("exec_result_compile", exec_result_compile)
+        start = time.time()
+        exec_result_run = subprocess.run(
+            [f"scala", "-cp", base_path, "Main"],
+            timeout=int(timeout),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        elapsed = 1000.0 * (time.time() - start)
+        if verbose:
+            print("exec result run", exec_result_run)
+        passed = exec_result_compile.returncode == 0 and exec_result_run.returncode == 0
+        if exec_result_compile.returncode > 0:
+            message = exec_result_compile.stderr
+        else:
+            message = exec_result_run.stderr
+
+    except Exception as e:
+        passed = False
+        message = str(e)
+        elapsed = None
+        compiled = False
+
+    try:
+        shutil.rmtree(base_path)
+    except Exception as e:
+        if verbose:
+            print(f"Error cleaning up directory {base_path}: {e}")
+
+    return dict(
+        task_id=problem["task_id"],
+        passed=passed,
+        result=message,
+        completion_id=completion_id,
+        time_elapsed=elapsed,
+        compiled=compiled,
     )
 
 
@@ -281,19 +340,21 @@ def check_correctness_csharp(
     timeout: float,
     completion_id: Optional[int] = None,
     verbose=False,
+    compilation_timeout: float = 100,
 ):
     current_dir = os.path.dirname(os.path.realpath(__file__))
-    program = problem["test_prompt"] + completion + problem["test"]
+    program = problem["prompt"] + completion + problem["test"]
     # template c# project has all necessary DLLs
     template_cs_proj_zip = os.path.join(current_dir, "../resources/eval_csproj.zip")
     cs_eval_dir = setup_base_path(current_dir, "cs_eval", "")
 
     # extract zip into cs_eval_dir
     subprocess.check_call(
-        f"unzip {template_cs_proj_zip} -d {cs_eval_dir}".split(), timeout=int(timeout)
+        f"unzip -q {template_cs_proj_zip} -d {cs_eval_dir}".split(), timeout=int(compilation_timeout)
     )
 
     passed, message = None, None
+    compiled = False
 
     try:
         cs_project_path = os.path.join(cs_eval_dir, "eval_csproj")
@@ -305,7 +366,7 @@ def check_correctness_csharp(
 
         compile_result = subprocess.run(
             f"dotnet build {cs_project_path}".split(),
-            timeout=int(timeout),
+            timeout=int(compilation_timeout),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
@@ -348,6 +409,7 @@ def check_correctness_csharp(
         passed=passed,
         result=message,
         completion_id=completion_id,
+        compiled=compiled,
         time_elapsed=elapsed,
     )
 
@@ -373,7 +435,7 @@ def check_correctness_cpp(
             "-o",
             f"{os.path.basename(x)}_cpp",
         ],
-        compile_timeout=5,
+        compile_timeout=100,
         subprocess_command_lambda=lambda x: [f"./{os.path.basename(x)}_cpp"],
         extra_cleanup=lambda x: f"{x}_cpp",
         cwd=True,
@@ -385,8 +447,9 @@ def setup_base_path(
     language_dirname,
     extension
 ):
-    if not os.path.isdir(os.path.join(current_dir, language_dirname)):
-        os.makedirs(os.path.join(current_dir, language_dirname))
+    with lock:
+        if not os.path.isdir(os.path.join(current_dir, language_dirname)):
+            os.makedirs(os.path.join(current_dir, language_dirname))
 
     num_attempts, path = 0, None
     while True:
@@ -420,7 +483,7 @@ def check_correctness_helper(
     language=None,
     extension=None,
     subprocess_command_lambda=None,
-    compile_timeout=20,
+    compile_timeout=100,
     compile_command_lambda=None,
     extra_cleanup=None,
     cwd=None,
