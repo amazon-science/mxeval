@@ -1,6 +1,6 @@
 # Execution-based evaluation of code in 10+ languages
 
-This repository contains code to perform execution-based multi-lingual evaluation of code generation capabilities and the corresponding data, namely, a multi-lingual benchmark MBXP, multi-lingual MathQA and multi-lingual HumanEval. Results and findings can be found in the paper [Multi-lingual Evaluation of Code Generation Models](https://arxiv.org/abs/2210.14868). 
+This repository contains code to perform execution-based multi-lingual evaluation of code generation capabilities and the corresponding data, namely, a multi-lingual benchmark MBXP, multi-lingual MathQA and multi-lingual HumanEval. Results and findings can be found in the paper "Multi-lingual Evaluation of Code Generation Models" (https://arxiv.org/abs/2210.14868).
 
 
 ## Paper summary
@@ -85,8 +85,8 @@ You can check the programming-language dependency installation by running the ab
 | Dataset | pass@1 |
 |---------|--------|
 | MBCPP   | 79.60% |
-| MBCSP   | 65.81% |
-| MBGP    | 40.79% |
+| MBCSP   | 63.63% |
+| MBGP    | 39.19% |
 | MBJP    | 85.30% |
 | MBJSP   | 78.67% |
 | MBKP    | 63.77% |
@@ -96,7 +96,7 @@ You can check the programming-language dependency installation by running the ab
 | MBRBP   | 58.90% |
 | MBSCP   | 42.96% |
 | MBSWP   | 29.40% |
-| MBTSP   | 89.67% |
+| MBTSP   | 87.29% |
 
 
 
