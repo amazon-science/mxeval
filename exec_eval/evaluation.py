@@ -31,6 +31,21 @@ from exec_eval.execution import (
     check_correctness_typescript,
 )
 
+check_correctness_function_map = {
+        "python": check_correctness,
+        "java": check_correctness_java,
+        "javascript": check_correctness_javascript,
+        "typescript": check_correctness_typescript,
+        "kotlin": check_correctness_kotlin,
+        "ruby": check_correctness_ruby,
+        "php": check_correctness_php,
+        "cpp": check_correctness_cpp,
+        "csharp": check_correctness_csharp,
+        "go": check_correctness_go,
+        "perl": check_correctness_perl,
+        "scala": check_correctness_scala,
+        "swift": check_correctness_swift,
+    }
 
 def estimate_pass_at_k(
     num_samples: Union[int, List[int], np.ndarray],
@@ -59,6 +74,10 @@ def estimate_pass_at_k(
         [estimator(int(n), int(c), k) for n, c in zip(num_samples_it, num_correct)]
     )
 
+def get_execute_function(lang):
+    lang = lang.lower()
+    assert lang in check_correctness_function_map, f"Language {lang} is not among the supported languages: {check_correctness_function_map.keys()}"
+    return check_correctness_function_map[lang]
 
 def evaluate_functional_correctness(
     sample_file: str,
