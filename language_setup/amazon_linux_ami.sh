@@ -2,11 +2,17 @@
 
 printf "%100s" " " | tr ' ' '-'
 echo ""
+echo "setting up C++ "
+printf "%100s" " " | tr ' ' '-'
+echo ""
+sudo yum install -y gcc-c++
+
+printf "%100s" " " | tr ' ' '-'
+echo ""
 echo "setting up Ruby "
 printf "%100s" " " | tr ' ' '-'
 echo ""
-sudo amazon-linux-extras install ruby3.0
-
+sudo amazon-linux-extras install -y ruby3.0
 
 printf "%100s" " " | tr ' ' '-'
 echo ""
@@ -30,8 +36,9 @@ echo ""
 echo "setting up Java "
 printf "%100s" " " | tr ' ' '-'
 echo ""
-sudo yum install -y java-1.8.0-amazon-corretto
-
+# ref https://docs.aws.amazon.com/corretto/latest/corretto-8-ug/amazon-linux-install.html
+sudo amazon-linux-extras enable corretto8
+sudo yum install -y java-1.8.0-amazon-corretto-devel
 
 printf "%100s" " " | tr ' ' '-'
 echo ""
@@ -67,8 +74,7 @@ echo "setting up Swift "
 printf "%100s" " " | tr ' ' '-'
 echo ""
 sudo wget https://download.swift.org/swift-5.7-release/amazonlinux2/swift-5.7-RELEASE/swift-5.7-RELEASE-amazonlinux2.tar.gz && sudo tar -xzvf swift-5.7-RELEASE-amazonlinux2.tar.gz && sudo rm swift-5.7-RELEASE-amazonlinux2.tar.gz
-export PATH=/usr/local/swift-5.7-RELEASE-amazonlinux2/usr/bin:"${PATH}"
-export PATH=/usr/local/go/bin:"${PATH}"
+
 cd ~
 printf "%100s" " " | tr ' ' '-'
 echo ""
@@ -91,6 +97,7 @@ echo ""
 echo "setting up Perl "
 printf "%100s" " " | tr ' ' '-'
 echo ""
+sudo yum install -y perl-CPAN
 perl -MCPAN -e 'install Data::Compare'
 
 printf "%100s" " " | tr ' ' '-'
@@ -102,3 +109,12 @@ curl -s https://get.sdkman.io | bash
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 sdk install kotlin
+
+# writing out updated PATH to ~/.bashrc
+echo 'export PATH="${PATH}:/usr/local/go/bin:/usr/local/swift-5.7-RELEASE-amazonlinux2/usr/bin"' >> ~/.bashrc
+
+printf "%100s" " " | tr ' ' '-'
+echo ""
+echo 'Installation complete. Please start a new terminal session for changes to take place.'
+printf "%100s" " " | tr ' ' '-'
+echo ""

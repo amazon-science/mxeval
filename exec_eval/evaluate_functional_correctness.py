@@ -14,7 +14,7 @@ def entry_point(
     problem_file: str = HUMAN_EVAL,
     k: tuple = (1, 10, 100, 1000),  # from command line, use '1,10,100' for example
     n_workers: int = os.cpu_count() - 1,
-    timeout: float = 3.0,
+    timeout: float = 15.0,
 ):
     """
     Evaluates the functional correctness of generated samples, and writes
