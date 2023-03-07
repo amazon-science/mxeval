@@ -47,3 +47,60 @@ def write_jsonl(filename: str, data: Iterable[Dict], append: bool = False):
         with open(filename, mode) as fp:
             for x in data:
                 fp.write((json.dumps(x) + "\n").encode('utf-8'))
+
+
+def get_metadata(dataset, metadata_type="problem"):
+  assert metadata_type in ["problem", "example"]
+  assert dataset in ["mbxp", "humanevalx", "mathqa-x"], f"Unsupported dataset {dataset}"
+  dataset_dirmap = {"mbxp": "mbxp",
+                    "humanevalx": "multilingual_humaneval",
+                    "mathqa-x": "multilingual_mathqa"}
+  typemap = {"problem": "metadata.json",
+             "example": "metadata_examples.json"}
+  datadir = os.path.join(ROOT, "..", "data", dataset_dirmap[dataset])
+  path =  os.path.join(datadir, typemap[metadata_type])
+  with open(path, "r") as f:
+    metadata = json.load(f)
+    return metadata, datadir
+
+
+def get_supported_langs(dataset):
+  metadata, _ = get_metadata(dataset, metadata_type="problem")
+  return list(metadata.keys())
+
+
+def get_data(dataset="mbxp", language="python"):
+  metadata, datadir = get_metadata(dataset, metadata_type="problem")
+  if language.lower() not in metadata:
+    raise ValueError(f"Language {language} not found in metadata file")
+  datafile = metadata[language.lower()]
+  print(f"Loading {dataset} | language = {language}")
+  return read_problems(os.path.join(datadir, datafile))
+
+
+def get_examples(dataset="mbxp", language="python", num_examples=None):
+  assert dataset in ["mbxp"], f"No fewshot examples in dataset {dataset}"
+  metadata, datadir = get_metadata(dataset=dataset, metadata_type="example")
+  if language.lower() not in metadata:
+    raise ValueError(f"Language {language} not found in metadata file")
+  datafile = metadata[language.lower()]
+  print(f"Loading examples from {dataset} | language = {language}")
+  # use streams
+  if num_examples is None:
+    # return the entire stream
+    return stream_jsonl(os.path.join(datadir, datafile))
+  else:
+    problems = get_data(dataset=dataset, language=language)
+    stream = get_examples(dataset=dataset, language=language)
+    examples = []
+    for idx, example in enumerate(stream):
+      if idx == num_examples:
+        break
+      task_id = example["task_id"]
+      prompt = problems[task_id]["prompt"]
+      example["prompt"] = prompt
+      examples.append(example)
+    return examples
+
+
+### TODO -- need examples from HumanEval and MathQA
