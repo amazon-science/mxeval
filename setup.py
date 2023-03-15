@@ -7,8 +7,8 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name="mbxp-exec-eval",
-    py_modules=["mbxp-exec-eval"],
+    name="mxeval",
+    py_modules=["mxeval"],
     version="1.0",
     description="",
     author="AWS AI Labs",
