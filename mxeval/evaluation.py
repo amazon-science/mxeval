@@ -11,11 +11,11 @@ from typing import Dict, Iterable, List, Union
 
 import numpy as np
 import tqdm
-from exec_eval.data import HUMAN_EVAL, read_problems, stream_jsonl, write_jsonl
+from mxeval.data import HUMAN_EVAL, read_problems, stream_jsonl, write_jsonl
 
 # Amazon modification
 # import check correctness for all languages
-from exec_eval.execution import (
+from mxeval.execution import (
     check_correctness,
     check_correctness_cpp,
     check_correctness_csharp,

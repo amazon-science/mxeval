@@ -5,8 +5,8 @@ import sys
 import os
 
 import fire
-from exec_eval.data import HUMAN_EVAL
-from exec_eval.evaluation import evaluate_functional_correctness
+from mxeval.data import HUMAN_EVAL
+from mxeval.evaluation import evaluate_functional_correctness
 
 
 def entry_point(

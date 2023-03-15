@@ -1,6 +1,6 @@
 The Multi-lingual Execution-Based Evaluation repository includes the following third-party software/licensing:
 
-** (1) in exec_eval/, we release Multi-lingual Execution-Based Evaluation we adapt the HumanEval code repository into a multi-lingual version which supports evaluation of all our datasets. The original code and dataset are from https://github.com/openai/human-eval.
+** (1) in mxeval/, we release Multi-lingual Execution-Based Evaluation we adapt the HumanEval code repository into a multi-lingual version which supports evaluation of all our datasets. The original code and dataset are from https://github.com/openai/human-eval.
 (2) In data/multilingual_humaneval, we release Multi-lingual HumanEval where we adapt the HumanEval dataset by OpenAI into multiple datasets in different programming languages. The original code and dataset are from https://github.com/openai/human-eval/tree/master/data.
 
 The MIT License

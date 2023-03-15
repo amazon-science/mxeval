@@ -21,7 +21,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "evaluate_functional_correctness = exec_eval.evaluate_functional_correctness",
+            "evaluate_functional_correctness = mxeval.evaluate_functional_correctness",
         ]
     }
 )
