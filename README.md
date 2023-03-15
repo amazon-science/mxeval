@@ -21,8 +21,8 @@ Below we demonstrate the language conversion (component A above) for the convers
 
 Check out and install this repository:
 ```
-git clone https://github.com/amazon-science/mbxp-exec-eval.git
-pip install -e mbxp-exec-eval
+git clone https://github.com/amazon-science/mxeval.git
+pip install -e mxeval
 ```
 
 
