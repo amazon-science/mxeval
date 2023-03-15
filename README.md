@@ -56,7 +56,7 @@ Here is nearly functional example code (you just have to provide
 `generate_one_completion` to make it work) that saves generated completions to
 `samples.jsonl`.
 ```
-from exec_eval.data import write_jsonl, read_problems
+from mxeval.data import write_jsonl, read_problems
 
 problems = read_problems()
 
