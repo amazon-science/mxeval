@@ -51,9 +51,9 @@ def write_jsonl(filename: str, data: Iterable[Dict], append: bool = False):
 
 def get_metadata(dataset, metadata_type="problem"):
   assert metadata_type in ["problem", "example"]
-  assert dataset in ["mbxp", "humanevalx", "mathqa-x"], f"Unsupported dataset {dataset}"
+  assert dataset in ["mbxp", "multi-humaneval", "mathqa-x"], f"Unsupported dataset {dataset}"
   dataset_dirmap = {"mbxp": "mbxp",
-                    "humanevalx": "multilingual_humaneval",
+                    "multi-humaneval": "multilingual_humaneval",
                     "mathqa-x": "multilingual_mathqa"}
   typemap = {"problem": "metadata.json",
              "example": "metadata_examples.json"}
@@ -78,6 +78,8 @@ def get_data(dataset="mbxp", language="python"):
   return read_problems(os.path.join(datadir, datafile))
 
 
+# due to similar format, examples from mbxp are sufficient to be used
+# for few-shot prompting in multi-humaneval
 def get_examples(dataset="mbxp", language="python", num_examples=None):
   assert dataset in ["mbxp"], f"No fewshot examples in dataset {dataset}"
   metadata, datadir = get_metadata(dataset=dataset, metadata_type="example")
@@ -101,6 +103,3 @@ def get_examples(dataset="mbxp", language="python", num_examples=None):
       example["prompt"] = prompt
       examples.append(example)
     return examples
-
-
-### TODO -- need examples from HumanEval and MathQA
