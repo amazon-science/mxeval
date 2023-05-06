@@ -8,6 +8,7 @@ import time
 from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, Iterable, List, Union
+from pathlib import Path
 
 import numpy as np
 import tqdm
@@ -76,8 +77,11 @@ def estimate_pass_at_k(
 
 def get_execute_function(lang):
     lang = lang.lower()
-    assert lang in check_correctness_function_map, f"Language {lang} is not among the supported languages: {check_correctness_function_map.keys()}"
-    return check_correctness_function_map[lang]
+    try:
+        check_correctness_function = check_correctness_function_map[lang]
+        return check_correctness_function
+    except KeyError:
+        raise ValueError(f"Language {lang} is not among the supported languages: {check_correctness_function_map.keys()}")
 
 def evaluate_functional_correctness(
     sample_file: str,
@@ -85,6 +89,7 @@ def evaluate_functional_correctness(
     n_workers: int = os.cpu_count() - 1,
     timeout: float = 10.0,
     problem_file: str = HUMAN_EVAL,
+    language: str = None
 ):
     """
     Evaluates the functional correctness of generated samples, and writes
@@ -95,21 +100,6 @@ def evaluate_functional_correctness(
 
     # see execution.py for details
     # Check the generated samples against test suites.
-    check_correctness_function_map = {
-        "python": check_correctness,
-        "java": check_correctness_java,
-        "javascript": check_correctness_javascript,
-        "typescript": check_correctness_typescript,
-        "kotlin": check_correctness_kotlin,
-        "ruby": check_correctness_ruby,
-        "php": check_correctness_php,
-        "cpp": check_correctness_cpp,
-        "csharp": check_correctness_csharp,
-        "go": check_correctness_go,
-        "perl": check_correctness_perl,
-        "scala": check_correctness_scala,
-        "swift": check_correctness_swift,
-    }
 
     seed = int(time.time() * 1000000) % 1000000
     np.random.seed(seed=seed)  # microsecond
@@ -125,8 +115,8 @@ def evaluate_functional_correctness(
             task_id = sample["task_id"]
             completion = sample["completion"]
             args = (problems[task_id], completion, timeout, completion_id[task_id])
-            language = sample["language"]
-            check_correctness_function = check_correctness_function_map[language]
+            sample_language = sample.get("language", language)
+            check_correctness_function = get_execute_function(sample_language)
             future = executor.submit(check_correctness_function, *args)
             futures.append(future)
             completion_id[task_id] += 1
@@ -134,8 +124,7 @@ def evaluate_functional_correctness(
 
         assert len(completion_id) == len(problems), "Some problems are not attempted."
 
-        print("Running test suites...")
-        for future in tqdm.tqdm(as_completed(futures), total=len(futures)):
+        for future in tqdm.tqdm(as_completed(futures), total=len(futures), desc="Running test suites"):
             result = future.result()  # this is the execution stage
             results[result["task_id"]].append((result["completion_id"], result))
 
@@ -167,7 +156,8 @@ def evaluate_functional_correctness(
             sample["time_elapsed"] = result[1]["time_elapsed"]
             yield sample
 
-    out_file = sample_file + "_results.jsonl"
+    out_file = Path(sample_file).with_suffix("_results.jsonl")
+
     print(f"Writing results to {out_file}...")
     write_jsonl(out_file, tqdm.tqdm(combine_results(), total=n_samples))
 

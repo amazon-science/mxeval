@@ -15,6 +15,7 @@ def entry_point(
     k: tuple = (1, 10, 100, 1000),  # from command line, use '1,10,100' for example
     n_workers: int = os.cpu_count() - 1,
     timeout: float = 15.0,
+    language: str = None,
 ):
     """
     Evaluates the functional correctness of generated samples, and writes
@@ -23,7 +24,12 @@ def entry_point(
     print(f"\n\nEvaluating {sample_file}")
     k = list(map(int, k))
     results = evaluate_functional_correctness(
-        sample_file, k, n_workers, timeout, problem_file
+        sample_file=sample_file,
+        k=k,
+        n_workers=n_workers,
+        timeout=timeout,
+        problem_file=problem_file,
+        language=language
     )
     with open(sample_file + "_passatk.json", "w") as f:
         f.write(str(results))
