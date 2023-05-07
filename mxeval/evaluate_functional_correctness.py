@@ -3,6 +3,8 @@
 
 import sys
 import os
+from pathlib import Path
+from typing import List, Union, Dict
 
 import fire
 from mxeval.data import HUMAN_EVAL
@@ -11,7 +13,7 @@ from mxeval.evaluation import evaluate_functional_correctness
 
 def entry_point(
     sample_file: str,
-    problem_file: str = HUMAN_EVAL,
+    problem_file: Union[List[Dict], str] = HUMAN_EVAL,
     k: tuple = (1, 10, 100, 1000),  # from command line, use '1,10,100' for example
     n_workers: int = os.cpu_count() - 1,
     timeout: float = 15.0,
@@ -31,7 +33,7 @@ def entry_point(
         problem_file=problem_file,
         language=language
     )
-    with open(sample_file + "_passatk.json", "w") as f:
+    with open(Path(sample_file).with_suffix(".passatk.json"), "w") as f:
         f.write(str(results))
     print(results)
 

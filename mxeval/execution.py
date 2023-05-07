@@ -37,7 +37,10 @@ def check_correctness_java(
     """
 
     current_dir = os.path.dirname(os.path.realpath(__file__))
-    entire_string = problem["prompt"] + completion + problem["test"]
+    try:
+        entire_string = problem["prompt"] + completion + problem["test"]
+    except KeyError:
+        raise ValueError(f"unexpected problem dict with keys: {problem.keys()}")
     base_path = setup_base_path(current_dir, f"{language}_exec_eval", "")
     try:
         os.makedirs(base_path, exist_ok=False)

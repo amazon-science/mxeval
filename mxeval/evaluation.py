@@ -88,7 +88,7 @@ def evaluate_functional_correctness(
     k: List[int] = [1, 10, 100],
     n_workers: int = os.cpu_count() - 1,
     timeout: float = 10.0,
-    problem_file: str = HUMAN_EVAL,
+    problem_file: Union[List[Dict], str] = HUMAN_EVAL,
     language: str = None
 ):
     """
@@ -96,7 +96,7 @@ def evaluate_functional_correctness(
     results to f"{sample_file}_results.jsonl"
     """
 
-    problems = read_problems(problem_file)
+    problems = read_problems(problem_file) if isinstance(problem_file, str) else problem_file
 
     # see execution.py for details
     # Check the generated samples against test suites.
@@ -156,7 +156,7 @@ def evaluate_functional_correctness(
             sample["time_elapsed"] = result[1]["time_elapsed"]
             yield sample
 
-    out_file = Path(sample_file).with_suffix("_results.jsonl")
+    out_file = Path(sample_file).with_suffix(".results.jsonl")
 
     print(f"Writing results to {out_file}...")
     write_jsonl(out_file, tqdm.tqdm(combine_results(), total=n_samples))
