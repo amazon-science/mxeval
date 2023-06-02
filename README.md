@@ -127,19 +127,19 @@ Some system might require longer compilation timeout. If you see that the execut
 
 ### Canonical solutions release
 
-We have released canonical solutions for certain popular langauges (v1.2). The numbers of the solutions for each langauge are listed below. 
+We have released canonical solutions for certain popular langauges (v1.2). The detailed numbers of the solutions for each langauge are listed below. 
 
 | Dataset | # solutions | # problems |
 |---------|-------------|------------|
-| MBCPP   | 773         | 848        |
-| MBCSP   | 725         | 968        |
-| MBJP    | 874         | 966        |
-| MBJSP   | 938         | 966        |
-| MBKP    | 796         | 966        |
-| MBPHP   | 950         | 966        |
-| MBPP    | 960         | 974        |
-| MBRBP   | 784         | 966        |
-| MBTSP   | 967         | 968        |
+| MBCPP   |     773     |     848    |
+| MBCSP   |     725     |     968    |
+| MBJP    |     874     |     966    |
+| MBJSP   |     938     |     966    |
+| MBKP    |     796     |     966    |
+| MBPHP   |     950     |     966    |
+| MBPP    |     960     |     974    |
+| MBRBP   |     784     |     966    |
+| MBTSP   |     967     |     968    |
 
 
 ### Future release
