@@ -91,7 +91,11 @@ def evaluate_functional_correctness(
     results to f"{sample_file}_results.jsonl"
     """
 
-    problems = read_problems(problem_file)
+    if type(problem_file) is not dict:
+        problems = read_problems(problem_file)
+    else:
+        print("Skip reading problems -- using problem_file (dict) as problems")
+        problems = problem_file
 
     # see execution.py for details
     # Check the generated samples against test suites.
