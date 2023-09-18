@@ -17,6 +17,7 @@ from mxeval.data import HUMAN_EVAL, read_problems, stream_jsonl, write_jsonl
 # import check correctness for all languages
 from mxeval.execution import (
     check_correctness,
+    check_correctness_python,
     check_correctness_cpp,
     check_correctness_csharp,
     check_correctness_go,
@@ -32,7 +33,7 @@ from mxeval.execution import (
 )
 
 check_correctness_function_map = {
-        "python": check_correctness,
+        "python": check_correctness_python,
         "java": check_correctness_java,
         "javascript": check_correctness_javascript,
         "typescript": check_correctness_typescript,
@@ -100,7 +101,7 @@ def evaluate_functional_correctness(
     # see execution.py for details
     # Check the generated samples against test suites.
     check_correctness_function_map = {
-        "python": check_correctness,
+        "python": check_correctness_python,
         "java": check_correctness_java,
         "javascript": check_correctness_javascript,
         "typescript": check_correctness_typescript,

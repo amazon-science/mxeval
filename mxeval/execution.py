@@ -473,6 +473,24 @@ def setup_base_path(
 
     return to_return
 
+def check_correctness_python(
+  problem: Dict,
+  completion: str,
+  timeout: float,
+  completion_id: Optional[int] = None,
+  verbose=True,
+):
+    return check_correctness_helper(
+        problem=problem,
+        completion=completion,
+        timeout=timeout,
+        completion_id=completion_id,
+        verbose=verbose,
+        language="python",
+        extension=".py",
+        compile_command_lambda=None,
+        subprocess_command_lambda=lambda x: ["python", f"{x}.py"],
+    )
 
 def check_correctness_helper(
     problem: Dict,
@@ -490,6 +508,10 @@ def check_correctness_helper(
 ):
     current_dir = os.path.dirname(os.path.realpath(__file__))
     entire_string = problem["prompt"] + completion + problem["test"]
+
+    ## in case of Python the test cases do not call the check function directly perhaps
+    if language == "python":
+        entire_string += f"\ncheck({problem['entry_point']})"
 
     language_dirname = f"{language}_exec_eval"
 
