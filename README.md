@@ -19,10 +19,12 @@ Below we demonstrate the language conversion (component A above) for the convers
 
 # Installation
 
-Check out and install this repository:
+Check out and install this repository. The repo works best with 'execute-message' branch which has more informative error message.
 ```
 git clone https://github.com/amazon-science/mxeval.git
-pip install -e mxeval
+cd mxeval
+git checkout execute-message
+pip install -e .
 ```
 
 

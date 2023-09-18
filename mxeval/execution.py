@@ -478,7 +478,7 @@ def check_correctness_python(
   completion: str,
   timeout: float,
   completion_id: Optional[int] = None,
-  verbose=True,
+  verbose=False,
 ):
     return check_correctness_helper(
         problem=problem,
