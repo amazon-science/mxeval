@@ -5,10 +5,14 @@ import os
 
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-HUMAN_EVAL = os.path.join(ROOT, "..", "data", "HumanEval.jsonl.gz")
+MULTILINGUAL_HUMANEVAL_METADATA = os.path.join(ROOT, "..", "data", "multilingual_humaneval", "metadata.json")
+with open(MULTILINGUAL_HUMANEVAL_METADATA, "r", encoding="utf-8") as fr:
+   MULTILINGUAL_HUMANEVAL_METADATA = json.load(fr)
+HUMAN_EVAL_PYTHON = os.path.join(ROOT, "..", "data", "multilingual_humaneval", MULTILINGUAL_HUMANEVAL_METADATA["python"])
+HUMAN_EVAL = HUMAN_EVAL_PYTHON
 
 
-def read_problems(evalset_file: str = HUMAN_EVAL) -> Dict[str, Dict]:
+def read_problems(evalset_file: str = HUMAN_EVAL_PYTHON) -> Dict[str, Dict]:
     return {task["task_id"]: task for task in stream_jsonl(evalset_file)}
 
 
