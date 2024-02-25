@@ -21,8 +21,7 @@ Below we demonstrate the language conversion (component A above) for the convers
 
 Check out and install this repository:
 ```
-git clone https://github.com/amazon-science/mxeval.git
-pip install -e mxeval
+pip install git+https://github.com/amazon-science/mxeval.git
 ```
 
 
