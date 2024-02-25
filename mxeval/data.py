@@ -5,10 +5,10 @@ import os
 
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-MULTILINGUAL_HUMANEVAL_METADATA = os.path.join(ROOT, "..", "data", "multilingual_humaneval", "metadata.json")
+MULTILINGUAL_HUMANEVAL_METADATA = os.path.join(ROOT, "data", "multilingual_humaneval", "metadata.json")
 with open(MULTILINGUAL_HUMANEVAL_METADATA, "r", encoding="utf-8") as fr:
    MULTILINGUAL_HUMANEVAL_METADATA = json.load(fr)
-HUMAN_EVAL_PYTHON = os.path.join(ROOT, "..", "data", "multilingual_humaneval", MULTILINGUAL_HUMANEVAL_METADATA["python"])
+HUMAN_EVAL_PYTHON = os.path.join(ROOT, "data", "multilingual_humaneval", MULTILINGUAL_HUMANEVAL_METADATA["python"])
 HUMAN_EVAL = HUMAN_EVAL_PYTHON
 
 
@@ -61,7 +61,7 @@ def get_metadata(dataset, metadata_type="problem"):
                     "mathqa-x": "multilingual_mathqa"}
   typemap = {"problem": "metadata.json",
              "example": "metadata_examples.json"}
-  datadir = os.path.join(ROOT, "..", "data", dataset_dirmap[dataset])
+  datadir = os.path.join(ROOT, "data", dataset_dirmap[dataset])
   path =  os.path.join(datadir, typemap[metadata_type])
   with open(path, "r") as f:
     metadata = json.load(f)

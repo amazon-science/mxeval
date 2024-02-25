@@ -13,6 +13,7 @@ setup(
     description="",
     author="AWS AI Labs",
     packages=find_packages(),
+    include_package_data=True,
     install_requires=[
         str(r)
         for r in pkg_resources.parse_requirements(
@@ -21,7 +22,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "evaluate_functional_correctness = mxeval.evaluate_functional_correctness",
+            "evaluate_functional_correctness = mxeval:evaluate_functional_correctness",
         ]
     }
 )
