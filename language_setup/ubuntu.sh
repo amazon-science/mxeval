@@ -41,12 +41,10 @@ echo "setting up JavaScript "
 printf "%100s" " " | tr ' ' '-'
 echo ""
 sudo apt install curl
-curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+curl -fsSL https://deb.nodesource.com/setup_20.x | bash
+apt-get -y install nodejs
 source ~/.bashrc
-sudo apt install npm
-nvm install 16.10.0
 node -e "console.log('Running Node.js ' + process.version)"
-npm i -g npm
 npm install -g lodash
 npm i --save lodash
 
